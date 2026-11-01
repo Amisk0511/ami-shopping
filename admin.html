@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ami Shopping Admin</title>
-
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="./supabase.js"></script>
-
-<style>
+<title>Ami Shopping Admin</title><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="./supabase.js"></script><style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f3f5fc;color:#14264f}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer;border:0;border-radius:9px;padding:11px 16px;background:#1769e0;color:white;font-weight:bold}
-button:disabled{opacity:.6}
+button:disabled{opacity:.6;cursor:not-allowed}
 input,select,textarea{width:100%;padding:12px;border:1px solid #dce3f0;border-radius:9px;margin:7px 0}
 textarea{min-height:80px}
 .hidden{display:none!important}
@@ -24,35 +18,19 @@ textarea{min-height:80px}
 .card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 18px #1725540c;margin-bottom:20px}
 #loginBox{max-width:420px;margin:100px auto;padding:30px}
 #loginBox h2{color:#123b8b}
-#error{color:#dc2626}
+#error{color:#dc2626;overflow-wrap:anywhere}
 
-/* Layout */
-.sidebar{
- position:fixed;left:0;top:0;bottom:0;width:225px;
- background:#09285e;color:white;padding:22px 14px;
- display:flex;flex-direction:column;z-index:10;overflow-y:auto
-}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:225px;background:#09285e;color:white;padding:22px 14px;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
 .brand{text-align:center;padding:8px 0 28px}
 .brand .logo{font-size:42px;color:#ffc928}
 .brand h2{color:#ffc928;margin:5px 0;font-size:23px}
 .brand p{margin:5px 0;color:#dbeafe}
-.nav a{
- display:flex;align-items:center;gap:13px;
- padding:14px 13px;margin:5px 0;border-radius:11px;
- color:white;text-decoration:none;font-weight:bold
-}
+.nav a{display:flex;align-items:center;gap:13px;padding:14px 13px;margin:5px 0;border-radius:11px;color:white;text-decoration:none;font-weight:bold}
 .nav a:hover,.nav a.active{background:#ffc928;color:#10295b}
-.sidebar-bottom{
- margin-top:auto;background:#173d78;border-radius:14px;
- padding:18px;text-align:center
-}
-.sidebar-bottom button{margin-top:10px}
+.sidebar-bottom{margin-top:auto;background:#173d78;border-radius:14px;padding:18px;text-align:center}
+.sidebar-bottom button{margin-top:10px;width:100%}
 .main{margin-left:225px;min-height:100vh}
-.topbar{
- height:72px;background:white;display:flex;align-items:center;
- justify-content:space-between;padding:0 28px;
- border-bottom:1px solid #e6eaf3;position:sticky;top:0;z-index:5
-}
+.topbar{height:72px;background:white;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #e6eaf3;position:sticky;top:0;z-index:5}
 .topbar-right{display:flex;align-items:center;gap:15px}
 .avatar{background:#4057e8;color:white;border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-weight:bold}
 .content{padding:26px;max-width:1500px;margin:auto}
@@ -60,7 +38,6 @@ textarea{min-height:80px}
 .welcome p{margin:0 0 22px;color:#64748b}
 .menu-btn{display:none;background:transparent;color:#123b8b;font-size:24px;padding:5px}
 
-/* Stats */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
 .stat{background:white;border-radius:15px;padding:19px;box-shadow:0 4px 18px #1725540c;display:flex;align-items:center;gap:14px;min-width:0}
 .stat-icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:25px;flex-shrink:0}
@@ -71,10 +48,9 @@ textarea{min-height:80px}
 .stat p{margin:0;color:#64748b;font-size:13px}
 .stat h2{font-size:22px;margin:7px 0 0;color:#10295b;overflow-wrap:anywhere}
 
-/* Dashboard panels */
-.grid-two{display:grid;grid-template-columns: minmax(0,2fr) minmax(270px,1fr);gap:18px}
+.grid-two{display:grid;grid-template-columns:minmax(0,2fr) minmax(270px,1fr);gap:18px}
 .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}
-.section-title h3{margin:0;color:#10295b;font-size:19px}
+.section-title h2,.section-title h3{margin:0;color:#10295b}
 .chart{height:220px;display:flex;align-items:flex-end;gap:12px;border-bottom:1px solid #dce3f0;padding:15px 5px 0}
 .bar-group{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;min-width:0}
 .bar{width:65%;max-width:38px;background:linear-gradient(#2584ff,#8bbcff);border-radius:7px 7px 0 0;min-height:3px}
@@ -85,14 +61,9 @@ textarea{min-height:80px}
 .status-row{display:flex;justify-content:space-between;gap:10px;font-size:13px}
 .track{height:9px;background:#edf1f8;border-radius:10px;margin-top:7px;overflow:hidden}
 .fill{height:100%;border-radius:10px}
-.pink{background:#ef5555}
-.blue-fill{background:#2784f5}
-.green-fill{background:#35bd73}
-.yellow-fill{background:#ffc928}
 
-/* Tables */
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:700px}
+table{width:100%;border-collapse:collapse;min-width:650px}
 th,td{padding:13px 11px;border-bottom:1px solid #edf0f6;text-align:left;font-size:13px;vertical-align:middle}
 th{background:#f0f4ff;color:#203b70}
 .badge{display:inline-block;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:bold}
@@ -108,6 +79,8 @@ th{background:#f0f4ff;color:#203b70}
 .message{color:#16803c;overflow-wrap:anywhere}
 #productMessage,#message{font-size:13px}
 .mobile-overlay{display:none}
+.report-number{font-size:24px;color:#10295b;margin:10px 0 18px}
+hr{border:0;border-top:1px solid #edf0f6;margin:15px 0}
 
 @media(max-width:1050px){
  .stats{grid-template-columns:repeat(2,1fr)}
@@ -129,53 +102,35 @@ th{background:#f0f4ff;color:#203b70}
  .form-grid{grid-template-columns:1fr}
  .form-grid .full{grid-column:auto}
  .mobile-overlay.show{display:block;position:fixed;inset:0;background:#0006;z-index:8}
+ .topbar-right .small{display:none}
 }
-</style>
-</head>
-
-<body>
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
+</style></head><body><!-- LOGIN --><div class="card" id="loginBox">
  <h2>🛍️ Ami Shopping</h2>
  <p class="small">Administrator Login</p>
  <input type="email" id="email" placeholder="Admin Email">
  <input type="password" id="password" placeholder="Password">
  <button id="loginBtn" style="width:100%">Login to Dashboard</button>
  <p id="error"></p>
-</div>
-
-<!-- ADMIN APP -->
-<div id="app" class="hidden">
-
-<aside class="sidebar" id="sidebar">
+</div><!-- ADMIN APP --><div id="app" class="hidden"><aside class="sidebar" id="sidebar">
  <div class="brand">
   <div class="logo">🛍️</div>
   <h2>Ami Shopping</h2>
   <p>Admin Panel</p>
- </div>
-
- <nav class="nav">
+ </div> <nav class="nav">
   <a href="#overview" class="active">🏠 Dashboard</a>
   <a href="#orders">🧾 Orders</a>
   <a href="#products">🏷️ Products</a>
   <a href="#customers">👥 Customers</a>
   <a href="#inventory">📦 Inventory</a>
-  <a href="#analytics">📈 Analytics</a>
+  <a href="#reports">🏆 Sales Reports</a>
   <a href="#settings">⚙️ Settings</a>
- </nav>
-
- <div class="sidebar-bottom">
+ </nav> <div class="sidebar-bottom">
   🛒<br><b>Grow Your Business</b>
   <p class="small" style="color:white">with Ami Shopping</p>
   <button class="yellow" onclick="window.open('./','_blank')">View Store →</button>
   <button id="logoutBtn" class="danger">Logout</button>
  </div>
-</aside>
-
-<div class="mobile-overlay" id="overlay"></div>
-
-<main class="main">
+</aside><div class="mobile-overlay" id="overlay"></div><main class="main">
  <header class="topbar">
   <button class="menu-btn" id="menuBtn">☰</button>
   <div class="topbar-right">
@@ -183,18 +138,11 @@ th{background:#f0f4ff;color:#203b70}
    <div class="avatar">A</div>
    <b>Admin</b>
   </div>
- </header>
-
- <div class="content">
-
- <!-- OVERVIEW -->
- <section id="overview">
+ </header> <div class="content"> <!-- OVERVIEW --> <section id="overview">
   <div class="welcome">
    <h1>Dashboard Overview</h1>
    <p>Welcome back, Admin 👋</p>
-  </div>
-
-  <div class="stats">
+  </div>  <div class="stats">
    <div class="stat">
     <div class="stat-icon blue">₹</div>
     <div><p>Total Sales</p><h2 id="totalSales">LKR 0.00</h2></div>
@@ -211,10 +159,8 @@ th{background:#f0f4ff;color:#203b70}
     <div class="stat-icon purple">👥</div>
     <div><p>Customers</p><h2 id="totalCustomers">0</h2></div>
    </div>
-  </div>
-
-  <div class="grid-two">
-   <div class="card" id="analytics">
+  </div>  <div class="grid-two">
+   <div class="card">
     <div class="section-title">
      <h3>📊 Sales Overview</h3>
      <span class="small">Last 7 days</span>
@@ -223,15 +169,11 @@ th{background:#f0f4ff;color:#203b70}
     <div class="legend">
      <span><i class="dot" style="background:#2784f5"></i>Daily order sales</span>
     </div>
-   </div>
-
-   <div class="card">
+   </div>   <div class="card">
     <div class="section-title"><h3>📋 Order Status</h3></div>
     <div class="status-list" id="statusSummary"></div>
    </div>
-  </div>
-
-  <div class="card">
+  </div>  <div class="card">
    <div class="section-title">
     <h3>🛍️ Recent Orders</h3>
     <button class="yellow" onclick="document.querySelector('#orders').scrollIntoView({behavior:'smooth'})">View All →</button>
@@ -243,17 +185,10 @@ th{background:#f0f4ff;color:#203b70}
     </table>
    </div>
   </div>
- </section>
-
- <!-- PRODUCTS -->
- <section id="products">
-  <div class="section-title"><h2>🏷️ Product Management</h2></div>
-
-  <div class="card">
+ </section> <!-- PRODUCTS --> <section id="products">
+  <div class="section-title"><h2>🏷️ Product Management</h2></div>  <div class="card">
    <h3 id="productFormTitle">Add New Product</h3>
-   <input type="hidden" id="productId">
-
-   <div class="form-grid">
+   <input type="hidden" id="productId">   <div class="form-grid">
     <div><label>Product Name</label><input id="productName" placeholder="Product Name"></div>
     <div><label>Category</label><input id="productCategory" placeholder="Category"></div>
     <div><label>Price (LKR)</label><input id="productPrice" type="number" min="0" step="0.01" placeholder="Price"></div>
@@ -273,9 +208,7 @@ th{background:#f0f4ff;color:#203b70}
    <button id="saveProductBtn">＋ Add Product</button>
    <button id="cancelEditBtn" class="secondary hidden">Cancel Edit</button>
    <p id="productMessage" class="message"></p>
-  </div>
-
-  <div class="card" id="inventory">
+  </div>  <div class="card" id="inventory">
    <div class="section-title">
     <h3>Products List</h3>
     <button id="refreshProductsBtn">↻ Refresh</button>
@@ -287,10 +220,7 @@ th{background:#f0f4ff;color:#203b70}
     </table>
    </div>
   </div>
- </section>
-
- <!-- ORDERS -->
- <section id="orders">
+ </section> <!-- ORDERS --> <section id="orders">
   <div class="section-title"><h2>🧾 Customer Orders</h2><button id="refreshBtn">↻ Refresh</button></div>
   <div class="card">
    <p id="message" class="message"></p>
@@ -301,10 +231,7 @@ th{background:#f0f4ff;color:#203b70}
     </table>
    </div>
   </div>
- </section>
-
- <!-- CUSTOMERS -->
- <section id="customers">
+ </section> <!-- CUSTOMERS --> <section id="customers">
   <div class="section-title"><h2>👥 Customers</h2></div>
   <div class="card">
    <p class="small">Customer list is based on customer details in existing orders.</p>
@@ -315,74 +242,140 @@ th{background:#f0f4ff;color:#203b70}
     </table>
    </div>
   </div>
- </section>
-
- <section id="settings">
+ </section> <!-- SALES REPORTS --> <section id="reports">
+  <div class="section-title">
+   <h2>🏆 Sales & Business Reports</h2>
+   <button id="refreshReportsBtn">↻ Refresh Reports</button>
+  </div>  <div class="grid-two">
+   <div class="card">
+    <h3>🏆 Top Selling Products</h3>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>Product</th><th>Quantity Sold</th><th>Revenue</th></tr></thead>
+      <tbody id="topProductsList"></tbody>
+     </table>
+    </div>
+   </div>   <div class="card">
+    <h3>⚠️ Low Stock Alert</h3>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>Product</th><th>Stock</th></tr></thead>
+      <tbody id="lowStockList"></tbody>
+     </table>
+    </div>
+    <p class="small">Products with stock of 5 or less.</p>
+   </div>
+  </div>  <div class="grid-two">
+   <div class="card">
+    <h3>👑 Top Customers</h3>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>Customer</th><th>Orders</th><th>Total Spent</th></tr></thead>
+      <tbody id="topCustomersList"></tbody>
+     </table>
+    </div>
+   </div>   <div class="card">
+    <h3>📊 Sales Summary</h3>
+    <p>Today's Sales</p>
+    <h2 class="report-number" id="todaySales">LKR 0.00</h2>
+    <hr>
+    <p>This Month's Sales</p>
+    <h2 class="report-number" id="monthlySales">LKR 0.00</h2>
+    <hr>
+    <p>Today's Orders</p>
+    <h2 class="report-number" id="todayOrders">0</h2>
+   </div>
+  </div>
+ </section> <!-- SETTINGS --> <section id="settings">
   <div class="card">
    <h3>⚙️ Settings</h3>
    <p>Welcome to Ami Shopping Admin Panel.</p>
    <p class="small">Store management and account settings can be added here later.</p>
   </div>
- </section>
-
- </div>
+ </section> </div>
 </main>
-</div>
-
-<script>
+</div><script>
 const $ = id => document.getElementById(id);
 let productsCache = [];
 let ordersCache = [];
 
 function escapeHTML(value){
  return String(value ?? "").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  })[c]);
 }
 
+function money(value){
+ return "LKR "+Number(value||0).toLocaleString("en-LK",{
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
+ });
+}
+
 function db(){
- if(typeof supabaseClient==="undefined") throw new Error("Supabase connection not found.");
+ if(typeof supabaseClient==="undefined") throw new Error("Supabase connection not found. Check supabase.js.");
  return supabaseClient;
 }
 
 async function verifyAdmin(user){
  const {data,error}=await db().from("admin_users")
   .select("user_id").eq("user_id",user.id).maybeSingle();
- if(error) throw error;
- if(!data) throw new Error("You are not authorized as Admin.");
+ if(error)throw error;
+ if(!data)throw new Error("You are not authorized as Admin.");
 }
 
 async function login(){
  $("error").textContent="";
  $("loginBtn").disabled=true;
+
  try{
   const email=$("email").value.trim();
   const password=$("password").value;
-  if(!email||!password) throw new Error("Enter email and password.");
+
+  if(!email||!password)throw new Error("Enter email and password.");
+
   const {data,error}=await db().auth.signInWithPassword({email,password});
-  if(error) throw error;
+  if(error)throw error;
+
   await verifyAdmin(data.user);
   showDashboard();
+
  }catch(e){
   $("error").textContent=e.message;
-  if(typeof supabaseClient!=="undefined") await db().auth.signOut();
- }finally{$("loginBtn").disabled=false;}
+  try{await db().auth.signOut();}catch(ignore){}
+ }finally{
+  $("loginBtn").disabled=false;
+ }
 }
 
 function showDashboard(){
  $("loginBox").classList.add("hidden");
  $("app").classList.remove("hidden");
- loadOrders();
- loadProducts();
+ loadDashboardData();
+}
+
+async function loadDashboardData(){
+ await Promise.all([loadProducts(),loadOrders()]);
+ renderReports();
 }
 
 async function uploadProductImage(){
  const file=$("productImageFile").files[0];
- if(!file) return null;
- const extension=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
- const fileName=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2))+"."+extension;
- const {data,error}=await db().storage.from("product-images").upload(fileName,file,{cacheControl:"3600",upsert:false});
- if(error) throw error;
+ if(!file)return null;
+
+ const extension=(file.name.split(".").pop()||"jpg")
+  .toLowerCase().replace(/[^a-z0-9]/g,"");
+
+ const fileName=(crypto.randomUUID
+  ?crypto.randomUUID()
+  :Date.now()+"-"+Math.random().toString(36).slice(2)
+ )+"."+extension;
+
+ const {data,error}=await db().storage.from("product-images")
+  .upload(fileName,file,{cacheControl:"3600",upsert:false});
+
+ if(error)throw error;
+
  const {data:publicData}=db().storage.from("product-images").getPublicUrl(data.path);
  return publicData.publicUrl;
 }
@@ -390,14 +383,27 @@ async function uploadProductImage(){
 $("productImageFile").addEventListener("change",function(){
  const file=this.files[0];
  if(!file)return;
- if(!file.type.startsWith("image/")){alert("Please select an image.");this.value="";return;}
- if(file.size>5*1024*1024){alert("Image must be smaller than 5 MB.");this.value="";return;}
+
+ if(!file.type.startsWith("image/")){
+  alert("Please select an image.");
+  this.value="";
+  return;
+ }
+
+ if(file.size>5*1024*1024){
+  alert("Image must be smaller than 5 MB.");
+  this.value="";
+  return;
+ }
+
  $("imagePreview").src=URL.createObjectURL(file);
  $("imagePreview").style.display="block";
 });
 
 function resetProductForm(){
- ["productId","productName","productCategory","productPrice","productStock","productDescription"].forEach(id=>$(id).value="");
+ ["productId","productName","productCategory","productPrice","productStock","productDescription"]
+ .forEach(id=>$(id).value="");
+
  $("productImageFile").value="";
  $("productActive").value="true";
  $("imagePreview").src="";
@@ -409,27 +415,47 @@ function resetProductForm(){
 
 async function loadProducts(){
  $("productMessage").textContent="Loading products...";
+
  try{
-  const {data,error}=await db().from("products").select("*").order("created_at",{ascending:false});
+  const {data,error}=await db().from("products")
+   .select("*").order("created_at",{ascending:false});
+
   if(error)throw error;
+
   productsCache=data||[];
+
   $("productsList").innerHTML=productsCache.map(p=>`
    <tr>
     <td>${p.image_url?`<img class="product-img" src="${escapeHTML(p.image_url)}" alt="">`:"No Image"}</td>
-    <td>${escapeHTML(p.name)}</td><td>${escapeHTML(p.category)}</td>
-    <td>LKR ${Number(p.price||0).toFixed(2)}</td><td>${Number(p.stock||0)}</td>
+    <td>${escapeHTML(p.name)}</td>
+    <td>${escapeHTML(p.category)}</td>
+    <td>${money(p.price)}</td>
+    <td>${Number(p.stock||0)}</td>
     <td><span class="badge ${p.active?"delivered":"cancelled"}">${p.active?"Active":"Inactive"}</span></td>
-    <td><button onclick="editProduct('${escapeHTML(p.id)}')">Edit</button> <button class="danger" onclick="deleteProduct('${escapeHTML(p.id)}')">Delete</button></td>
-   </tr>`).join("");
-  if(!productsCache.length)$("productsList").innerHTML='<tr><td colspan="7">No products found.</td></tr>';
+    <td>
+     <button onclick="editProduct('${escapeHTML(p.id)}')">Edit</button>
+     <button class="danger" onclick="deleteProduct('${escapeHTML(p.id)}')">Delete</button>
+    </td>
+   </tr>
+  `).join("");
+
+  if(!productsCache.length){
+   $("productsList").innerHTML='<tr><td colspan="7">No products found.</td></tr>';
+  }
+
   $("totalProducts").textContent=productsCache.length;
   $("productMessage").textContent="Products loaded successfully.";
- }catch(e){$("productMessage").textContent="Error: "+e.message;}
+  renderReports();
+
+ }catch(e){
+  $("productMessage").textContent="Error: "+e.message;
+ }
 }
 
 async function saveProduct(){
  $("productMessage").textContent="";
  $("saveProductBtn").disabled=true;
+
  try{
   const name=$("productName").value.trim();
   const category=$("productCategory").value.trim();
@@ -440,34 +466,50 @@ async function saveProduct(){
   const id=$("productId").value;
 
   if(!name)throw new Error("Enter product name.");
-  if($("productPrice").value===""||!Number.isFinite(price)||price<0)throw new Error("Enter a valid price.");
-  if($("productStock").value===""||!Number.isInteger(stock)||stock<0)throw new Error("Enter a valid stock quantity.");
+  if($("productPrice").value===""||!Number.isFinite(price)||price<0)
+   throw new Error("Enter a valid price.");
+  if($("productStock").value===""||!Number.isInteger(stock)||stock<0)
+   throw new Error("Enter a valid stock quantity.");
 
   let image_url=null;
+
   if($("productImageFile").files[0]){
    $("productMessage").textContent="Uploading image...";
    image_url=await uploadProductImage();
   }else if(id){
-   const {data,error}=await db().from("products").select("image_url").eq("id",id).single();
+   const {data,error}=await db().from("products")
+    .select("image_url").eq("id",id).single();
    if(error)throw error;
    image_url=data.image_url;
   }
 
   const product={name,category,price,stock,image_url,description,active};
-  let result=id?await db().from("products").update(product).eq("id",id):await db().from("products").insert(product);
+
+  const result=id
+   ?await db().from("products").update(product).eq("id",id)
+   :await db().from("products").insert(product);
+
   if(result.error)throw result.error;
 
-  $("productMessage").textContent=id?"Product updated successfully!":"Product added successfully!";
+  $("productMessage").textContent=id
+   ?"Product updated successfully!"
+   :"Product added successfully!";
+
   resetProductForm();
   await loadProducts();
- }catch(e){$("productMessage").textContent="Error: "+e.message;}
- finally{$("saveProductBtn").disabled=false;}
+
+ }catch(e){
+  $("productMessage").textContent="Error: "+e.message;
+ }finally{
+  $("saveProductBtn").disabled=false;
+ }
 }
 
 async function editProduct(id){
  try{
   const {data,error}=await db().from("products").select("*").eq("id",id).single();
   if(error)throw error;
+
   $("productId").value=data.id;
   $("productName").value=data.name||"";
   $("productCategory").value=data.category||"";
@@ -476,55 +518,109 @@ async function editProduct(id){
   $("productDescription").value=data.description||"";
   $("productActive").value=String(data.active);
   $("productImageFile").value="";
-  if(data.image_url){$("imagePreview").src=data.image_url;$("imagePreview").style.display="block";}
-  else $("imagePreview").style.display="none";
+
+  if(data.image_url){
+   $("imagePreview").src=data.image_url;
+   $("imagePreview").style.display="block";
+  }else{
+   $("imagePreview").style.display="none";
+  }
+
   $("saveProductBtn").textContent="Update Product";
   $("cancelEditBtn").classList.remove("hidden");
   $("productFormTitle").textContent="Edit Product";
   $("products").scrollIntoView({behavior:"smooth"});
- }catch(e){$("productMessage").textContent="Edit error: "+e.message;}
+
+ }catch(e){
+  $("productMessage").textContent="Edit error: "+e.message;
+ }
 }
 
 async function deleteProduct(id){
  if(!confirm("Are you sure you want to delete this product?"))return;
+
  try{
   const {error}=await db().from("products").delete().eq("id",id);
   if(error)throw error;
+
   $("productMessage").textContent="Product deleted successfully.";
   await loadProducts();
- }catch(e){$("productMessage").textContent="Delete error: "+e.message;}
+
+ }catch(e){
+  $("productMessage").textContent="Delete error: "+e.message;
+ }
 }
 
 function badge(status){
  const s=String(status||"pending").toLowerCase();
- const cls=["pending","processing","shipped","delivered","cancelled"].includes(s)?s:"pending";
+ const cls=["pending","processing","shipped","delivered","cancelled"].includes(s)
+  ?s:"pending";
  return `<span class="badge ${cls}">${escapeHTML(s)}</span>`;
+}
+
+function getOrderItems(order){
+ try{
+  let items=order.items;
+  if(typeof items==="string")items=JSON.parse(items);
+  return Array.isArray(items)?items:[];
+ }catch(e){
+  console.error("Could not read order items:",e);
+  return [];
+ }
+}
+
+function isValidSale(order){
+ return String(order.order_status||"").toLowerCase()!=="cancelled";
+}
+
+function getOrderDate(order){
+ if(!order.created_at)return null;
+ const date=new Date(order.created_at);
+ return Number.isNaN(date.getTime())?null:date;
 }
 
 async function loadOrders(){
  $("message").textContent="Loading orders...";
+
  try{
-  const {data,error}=await db().from("orders").select("*").order("created_at",{ascending:false});
+  const {data,error}=await db().from("orders")
+   .select("*").order("created_at",{ascending:false});
+
   if(error)throw error;
+
   ordersCache=data||[];
 
   $("totalOrders").textContent=ordersCache.length;
-  $("pendingOrders").textContent=ordersCache.filter(o=>o.order_status==="pending").length;
-  $("deliveredOrders").textContent=ordersCache.filter(o=>o.order_status==="delivered").length;
 
-  // Exclude cancelled orders from sales total
-  const sales=ordersCache.filter(o=>o.order_status!=="cancelled").reduce((sum,o)=>sum+(Number(o.total_amount)||0),0);
-  $("totalSales").textContent="LKR "+sales.toLocaleString("en-LK",{minimumFractionDigits:2});
+  const sales=ordersCache.filter(isValidSale)
+   .reduce((sum,o)=>sum+(Number(o.total_amount)||0),0);
+
+  $("totalSales").textContent=money(sales);
 
   const customers=new Map();
+
   ordersCache.forEach(o=>{
    const key=o.customer_phone||o.customer_name||"Unknown";
-   if(!customers.has(key))customers.set(key,{name:o.customer_name,phone:o.customer_phone,count:0});
+
+   if(!customers.has(key)){
+    customers.set(key,{
+     name:o.customer_name,
+     phone:o.customer_phone,
+     count:0
+    });
+   }
+
    customers.get(key).count++;
   });
+
   $("totalCustomers").textContent=customers.size;
+
   $("customersList").innerHTML=[...customers.values()].map(c=>`
-   <tr><td>${escapeHTML(c.name)}</td><td>${escapeHTML(c.phone)}</td><td>${c.count}</td></tr>
+   <tr>
+    <td>${escapeHTML(c.name)}</td>
+    <td>${escapeHTML(c.phone)}</td>
+    <td>${c.count}</td>
+   </tr>
   `).join("")||'<tr><td colspan="3">No customers yet.</td></tr>';
 
   $("ordersList").innerHTML=ordersCache.map(o=>`
@@ -533,72 +629,239 @@ async function loadOrders(){
     <td>${escapeHTML(o.customer_phone)}</td>
     <td>${escapeHTML(o.delivery_address)}</td>
     <td>${escapeHTML(typeof o.items==="string"?o.items:JSON.stringify(o.items))}</td>
-    <td>LKR ${Number(o.total_amount||0).toFixed(2)}</td>
+    <td>${money(o.total_amount)}</td>
     <td>${badge(o.order_status)}</td>
     <td>
      <select id="status-${escapeHTML(o.id)}">
-      ${["pending","processing","shipped","delivered","cancelled"].map(s=>`<option value="${s}" ${o.order_status===s?"selected":""}>${s}</option>`).join("")}
+      ${["pending","processing","shipped","delivered","cancelled"].map(s=>
+       `<option value="${s}" ${o.order_status===s?"selected":""}>${s}</option>`
+      ).join("")}
      </select>
      <button onclick="updateStatus('${escapeHTML(o.id)}')">Save</button>
     </td>
-   </tr>`).join("");
-  if(!ordersCache.length)$("ordersList").innerHTML='<tr><td colspan="7">No orders found.</td></tr>';
+   </tr>
+  `).join("");
+
+  if(!ordersCache.length){
+   $("ordersList").innerHTML='<tr><td colspan="7">No orders found.</td></tr>';
+  }
 
   $("recentOrders").innerHTML=ordersCache.slice(0,5).map(o=>`
-   <tr><td>${escapeHTML(o.customer_name)}</td><td>${escapeHTML(o.customer_phone)}</td><td>LKR ${Number(o.total_amount||0).toFixed(2)}</td><td>${badge(o.order_status)}</td></tr>
+   <tr>
+    <td>${escapeHTML(o.customer_name)}</td>
+    <td>${escapeHTML(o.customer_phone)}</td>
+    <td>${money(o.total_amount)}</td>
+    <td>${badge(o.order_status)}</td>
+   </tr>
   `).join("")||'<tr><td colspan="4">No orders yet.</td></tr>';
 
   renderStatusSummary();
   renderSalesChart();
+  renderReports();
+
   $("message").textContent="Orders loaded successfully.";
- }catch(e){$("message").textContent="Error: "+e.message;}
+
+ }catch(e){
+  $("message").textContent="Error: "+e.message;
+ }
 }
 
 function renderStatusSummary(){
  const total=ordersCache.length||1;
+
  const statuses=[
   ["Pending","pending","#ffc928"],
   ["Processing","processing","#2784f5"],
+  ["Shipped","shipped","#8b5cf6"],
   ["Delivered","delivered","#35bd73"],
   ["Cancelled","cancelled","#ef5555"]
  ];
+
  $("statusSummary").innerHTML=statuses.map(([label,key,color])=>{
-  const count=ordersCache.filter(o=>o.order_status===key).length;
+  const count=ordersCache.filter(o=>
+   String(o.order_status||"pending").toLowerCase()===key
+  ).length;
+
   const percent=Math.round(count/total*100);
-  return `<div><div class="status-row"><b>${label}</b><span>${count} (${percent}%)</span></div><div class="track"><div class="fill" style="width:${percent}%;background:${color}"></div></div></div>`;
+
+  return `
+   <div>
+    <div class="status-row"><b>${label}</b><span>${count} (${percent}%)</span></div>
+    <div class="track"><div class="fill" style="width:${percent}%;background:${color}"></div></div>
+   </div>
+  `;
  }).join("");
 }
 
 function renderSalesChart(){
  const days=[];
+
  for(let i=6;i>=0;i--){
   const d=new Date();
   d.setHours(0,0,0,0);
   d.setDate(d.getDate()-i);
-  const key=d.toDateString();
-  const amount=ordersCache.filter(o=>o.order_status!=="cancelled"&&o.created_at&&new Date(o.created_at).toDateString()===key).reduce((sum,o)=>sum+(Number(o.total_amount)||0),0);
-  days.push({label:d.toLocaleDateString("en",{weekday:"short"}),amount});
+
+  const amount=ordersCache.filter(o=>{
+   if(!isValidSale(o))return false;
+   const orderDate=getOrderDate(o);
+   return orderDate&&orderDate.toDateString()===d.toDateString();
+  }).reduce((sum,o)=>sum+(Number(o.total_amount)||0),0);
+
+  days.push({
+   label:d.toLocaleDateString("en",{weekday:"short"}),
+   amount
+  });
  }
+
  const max=Math.max(...days.map(d=>d.amount),1);
+
  $("salesChart").innerHTML=days.map(d=>`
-  <div class="bar-group" title="LKR ${d.amount.toFixed(2)}">
+  <div class="bar-group" title="${money(d.amount)}">
    <div class="bar" style="height:${Math.max(3,d.amount/max*85)}%"></div>
    <span class="bar-label">${d.label}</span>
-  </div>`).join("");
+  </div>
+ `).join("");
+}
+
+function renderReports(){
+
+ // TOP SELLING PRODUCTS
+ const productSales=new Map();
+
+ ordersCache.filter(isValidSale).forEach(order=>{
+  getOrderItems(order).forEach(item=>{
+   const id=String(item.product_id??item.name??"unknown");
+   const name=item.name||"Unknown Product";
+   const quantity=Math.max(0,Number(item.quantity)||0);
+   const price=Math.max(0,Number(item.unit_price)||0);
+
+   if(!productSales.has(id)){
+    productSales.set(id,{name,quantity:0,revenue:0});
+   }
+
+   const product=productSales.get(id);
+   product.quantity+=quantity;
+   product.revenue+=quantity*price;
+  });
+ });
+
+ const bestProducts=[...productSales.values()]
+  .sort((a,b)=>b.quantity-a.quantity);
+
+ $("topProductsList").innerHTML=bestProducts.length
+  ?bestProducts.slice(0,10).map(p=>`
+    <tr>
+     <td>${escapeHTML(p.name)}</td>
+     <td>${p.quantity}</td>
+     <td>${money(p.revenue)}</td>
+    </tr>
+   `).join("")
+  :'<tr><td colspan="3">No sales yet.</td></tr>';
+
+
+ // LOW STOCK ALERT
+ const lowStock=productsCache
+  .filter(p=>p.active&&Number(p.stock||0)<=5)
+  .sort((a,b)=>Number(a.stock||0)-Number(b.stock||0));
+
+ $("lowStockList").innerHTML=lowStock.length
+  ?lowStock.map(p=>`
+    <tr>
+     <td>${escapeHTML(p.name)}</td>
+     <td>
+      <span class="badge ${Number(p.stock||0)<=0?"cancelled":"pending"}">
+       ${Number(p.stock||0)}
+      </span>
+     </td>
+    </tr>
+   `).join("")
+  :'<tr><td colspan="2">All products have sufficient stock.</td></tr>';
+
+
+ // TOP CUSTOMERS
+ const customerStats=new Map();
+
+ ordersCache.filter(isValidSale).forEach(order=>{
+  const key=order.customer_phone||order.customer_name||"Unknown";
+
+  if(!customerStats.has(key)){
+   customerStats.set(key,{
+    name:order.customer_name||"Unknown",
+    orders:0,
+    spent:0
+   });
+  }
+
+  const customer=customerStats.get(key);
+  customer.orders++;
+  customer.spent+=Number(order.total_amount||0);
+ });
+
+ const topCustomers=[...customerStats.values()]
+  .sort((a,b)=>b.spent-a.spent);
+
+ $("topCustomersList").innerHTML=topCustomers.length
+  ?topCustomers.slice(0,10).map(c=>`
+    <tr>
+     <td>${escapeHTML(c.name)}</td>
+     <td>${c.orders}</td>
+     <td>${money(c.spent)}</td>
+    </tr>
+   `).join("")
+  :'<tr><td colspan="3">No customers yet.</td></tr>';
+
+
+ // DAILY AND MONTHLY SALES
+ const now=new Date();
+
+ const todayOrdersList=ordersCache.filter(o=>{
+  if(!isValidSale(o))return false;
+  const d=getOrderDate(o);
+  return d&&d.getFullYear()===now.getFullYear()
+   &&d.getMonth()===now.getMonth()
+   &&d.getDate()===now.getDate();
+ });
+
+ const monthOrdersList=ordersCache.filter(o=>{
+  if(!isValidSale(o))return false;
+  const d=getOrderDate(o);
+  return d&&d.getFullYear()===now.getFullYear()
+   &&d.getMonth()===now.getMonth();
+ });
+
+ const todayTotal=todayOrdersList.reduce(
+  (sum,o)=>sum+(Number(o.total_amount)||0),0
+ );
+
+ const monthTotal=monthOrdersList.reduce(
+  (sum,o)=>sum+(Number(o.total_amount)||0),0
+ );
+
+ $("todaySales").textContent=money(todayTotal);
+ $("monthlySales").textContent=money(monthTotal);
+ $("todayOrders").textContent=todayOrdersList.length;
 }
 
 async function updateStatus(id){
  try{
   const status=$("status-"+id).value;
-  const {error}=await db().from("orders").update({order_status:status}).eq("id",id);
+
+  const {error}=await db().from("orders")
+   .update({order_status:status}).eq("id",id);
+
   if(error)throw error;
+
   $("message").textContent="Order status updated!";
   await loadOrders();
- }catch(e){$("message").textContent="Update failed: "+e.message;}
+
+ }catch(e){
+  $("message").textContent="Update failed: "+e.message;
+ }
 }
 
 async function logout(){
  await db().auth.signOut();
+
  $("app").classList.add("hidden");
  $("loginBox").classList.remove("hidden");
  $("email").value="";
@@ -612,11 +875,16 @@ $("saveProductBtn").addEventListener("click",saveProduct);
 $("cancelEditBtn").addEventListener("click",resetProductForm);
 $("refreshProductsBtn").addEventListener("click",loadProducts);
 $("refreshBtn").addEventListener("click",loadOrders);
+$("refreshReportsBtn").addEventListener("click",async()=>{
+ await Promise.all([loadProducts(),loadOrders()]);
+ renderReports();
+});
 
 $("menuBtn").addEventListener("click",()=>{
  $("sidebar").classList.toggle("open");
  $("overlay").classList.toggle("show");
 });
+
 $("overlay").addEventListener("click",()=>{
  $("sidebar").classList.remove("open");
  $("overlay").classList.remove("show");
@@ -635,16 +903,17 @@ document.querySelectorAll(".nav a").forEach(a=>{
  try{
   const {data,error}=await db().auth.getSession();
   if(error)throw error;
+
   if(data.session){
    const {data:userData,error:userError}=await db().auth.getUser();
    if(userError)throw userError;
+
    await verifyAdmin(userData.user);
    showDashboard();
   }
  }catch(e){
-  await db().auth.signOut();
+  try{await db().auth.signOut();}catch(ignore){}
  }
 })();
-</script>
-</body>
+</script></body>
 </html>
