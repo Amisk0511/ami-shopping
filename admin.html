@@ -2,10 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ami Shopping Admin</title>
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="./supabase.js"></script>
-<style>
+<title>Ami Shopping Admin</title><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="./supabase.js"></script><style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial;background:#f1f5ff;color:#172554}
 header{background:#123b8b;color:white;padding:18px;display:flex;justify-content:space-between;align-items:center}
@@ -14,6 +11,7 @@ header{background:#123b8b;color:white;padding:18px;display:flex;justify-content:
 input,select,textarea{width:100%;padding:13px;margin:8px 0;border:1px solid #ccd5e5;border-radius:7px}
 textarea{min-height:75px}
 button{padding:12px 18px;border:0;border-radius:7px;background:#1769e0;color:white;font-weight:bold;cursor:pointer;margin:3px}
+button:disabled{opacity:.6}
 .logout{background:#ffd43b;color:#123b8b}
 .danger{background:#dc2626}
 .secondary{background:#64748b}
@@ -22,35 +20,29 @@ button{padding:12px 18px;border:0;border-radius:7px;background:#1769e0;color:whi
 .stat h2{color:#1769e0}
 #dashboard{display:none}
 #error{color:red}
-#message,#productMessage{color:green}
+#message,#productMessage{color:green;overflow-wrap:anywhere}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:750px}
 th,td{padding:12px;border-bottom:1px solid #ddd;text-align:left}
 th{background:#e7efff}
 .product-img{width:55px;height:55px;object-fit:cover;border-radius:7px}
+#imagePreview{width:160px;height:160px;object-fit:contain;display:none;margin:10px 0;border:1px solid #ddd;border-radius:10px}
 .small{font-size:12px;color:#64748b}
-</style>
-</head>
-<body>
-<header>
+</style></head><body><header>
 <h2>AMI SHOPPING</h2>
 <button id="logoutBtn" class="logout" style="display:none">Logout</button>
-</header><div class="container">
-<div class="card" id="loginBox">
+</header><div class="container"><div class="card" id="loginBox">
 <h2>Admin Login</h2>
 <input type="email" id="email" placeholder="Admin Email">
 <input type="password" id="password" placeholder="Password">
 <button id="loginBtn">Login</button>
 <p id="error"></p>
-</div><div id="dashboard">
-<h2>Admin Dashboard</h2><div class="stats">
+</div><div id="dashboard"><h2>Admin Dashboard</h2><div class="stats">
 <div class="stat"><p>Total Orders</p><h2 id="totalOrders">0</h2></div>
 <div class="stat"><p>Pending Orders</p><h2 id="pendingOrders">0</h2></div>
 <div class="stat"><p>Delivered Orders</p><h2 id="deliveredOrders">0</h2></div>
 <div class="stat"><p>Total Sales</p><h2 id="totalSales">Rs. 0.00</h2></div>
-</div><div class="card">
-<h3>Product Management</h3>
-<input type="hidden" id="productId"><label>Product Name</label>
+</div><!-- PRODUCT MANAGEMENT --><div class="card"><h3>Product Management</h3><input type="hidden" id="productId"><label>Product Name</label>
 <input id="productName" placeholder="Product Name">
 
 <label>Category</label>
@@ -62,10 +54,10 @@ th{background:#e7efff}
 <label>Stock Quantity</label>
 <input id="productStock" type="number" min="0" step="1" placeholder="Stock">
 
-<label>Product Image URL</label>
-<input id="productImage" type="url" placeholder="https://example.com/image.jpg">
+<label>Product Image</label>
+<input type="file" id="productImageFile" accept="image/*">
 
-<label>Description</label>
+<img id="imagePreview" alt="Product Image Preview"><p class="small">Select an image from your mobile gallery. Maximum 5 MB.</p><label>Description</label>
 
 <textarea id="productDescription" placeholder="Product description"></textarea><label>Status</label>
 <select id="productActive">
@@ -75,11 +67,8 @@ th{background:#e7efff}
 </select><button id="saveProductBtn">Add Product</button>
 <button id="cancelEditBtn" class="secondary" style="display:none">Cancel Edit</button>
 
-<p id="productMessage"></p>
-</div><div class="card">
-<h3>Products List</h3>
-<button id="refreshProductsBtn">Refresh Products</button>
-<div class="table-wrap">
+<p id="productMessage"></p></div><!-- PRODUCT LIST --><div class="card"><h3>Products List</h3>
+<button id="refreshProductsBtn">Refresh Products</button><div class="table-wrap">
 <table>
 <thead>
 <tr>
@@ -94,12 +83,9 @@ th{background:#e7efff}
 </thead>
 <tbody id="productsList"></tbody>
 </table>
-</div>
-</div><div class="card">
-<h3>Customer Orders</h3>
+</div></div><!-- ORDERS --><div class="card"><h3>Customer Orders</h3>
 <button id="refreshBtn">Refresh Orders</button>
-<p id="message"></p>
-<div class="table-wrap">
+<p id="message"></p><div class="table-wrap">
 <table>
 <thead>
 <tr>
@@ -114,10 +100,10 @@ th{background:#e7efff}
 </thead>
 <tbody id="ordersList"></tbody>
 </table>
-</div>
-</div>
+</div></div>
 </div>
 </div><script>
+
 const $ = id => document.getElementById(id);
 
 function escapeHTML(value){
@@ -145,56 +131,133 @@ async function verifyAdmin(user){
 }
 
 async function login(){
+
  $("error").textContent="";
  $("loginBtn").disabled=true;
+
  try{
+
   const email=$("email").value.trim();
   const password=$("password").value;
+
   if(!email || !password) throw new Error("Enter email and password.");
 
   const {data,error}=await db().auth.signInWithPassword({email,password});
+
   if(error) throw error;
 
   await verifyAdmin(data.user);
+
   showDashboard();
+
  }catch(e){
+
   $("error").textContent=e.message;
-  if(typeof supabaseClient!=="undefined") await db().auth.signOut();
+
+  if(typeof supabaseClient!=="undefined"){
+   await db().auth.signOut();
+  }
+
  }finally{
   $("loginBtn").disabled=false;
  }
 }
 
 function showDashboard(){
+
  $("loginBox").style.display="none";
  $("dashboard").style.display="block";
  $("logoutBtn").style.display="block";
+
  loadOrders();
  loadProducts();
 }
 
-/* PRODUCTS */
+/* IMAGE PREVIEW */
+
+$("productImageFile").addEventListener("change",function(){
+
+ const file=this.files[0];
+
+ if(!file) return;
+
+ if(!file.type.startsWith("image/")){
+  alert("Please select an image.");
+  this.value="";
+  return;
+ }
+
+ if(file.size>5*1024*1024){
+  alert("Image must be smaller than 5 MB.");
+  this.value="";
+  return;
+ }
+
+ $("imagePreview").src=URL.createObjectURL(file);
+ $("imagePreview").style.display="block";
+});
+
+/* IMAGE UPLOAD */
+
+async function uploadProductImage(){
+
+ const file=$("productImageFile").files[0];
+
+ if(!file) return null;
+
+ const extension=file.name.split(".").pop().toLowerCase();
+ const fileName=crypto.randomUUID()+"."+extension;
+
+ const {data,error}=await db()
+ .storage
+ .from("product-images")
+ .upload(fileName,file,{
+  cacheControl:"3600",
+  upsert:false
+ });
+
+ if(error) throw error;
+
+ const {data:publicData}=db()
+ .storage
+ .from("product-images")
+ .getPublicUrl(data.path);
+
+ return publicData.publicUrl;
+}
+
+/* RESET FORM */
 
 function resetProductForm(){
+
  $("productId").value="";
  $("productName").value="";
  $("productCategory").value="";
  $("productPrice").value="";
  $("productStock").value="";
- $("productImage").value="";
+ $("productImageFile").value="";
  $("productDescription").value="";
  $("productActive").value="true";
+
+ $("imagePreview").src="";
+ $("imagePreview").style.display="none";
+
  $("saveProductBtn").textContent="Add Product";
  $("cancelEditBtn").style.display="none";
 }
 
+/* LOAD PRODUCTS */
+
 async function loadProducts(){
+
  $("productMessage").textContent="Loading products...";
+
  try{
+
   const {data,error}=await db()
-   .from("products")
-   .select("*")
-   .order("created_at",{ascending:false});
+  .from("products")
+  .select("*")
+  .order("created_at",{ascending:false});
 
   if(error) throw error;
 
@@ -205,7 +268,7 @@ async function loadProducts(){
     <td>${escapeHTML(p.category)}</td>
     <td>Rs. ${Number(p.price||0).toFixed(2)}</td>
     <td>${Number(p.stock||0)}</td>
-    <td>${p.active ? "Active":"Inactive"}</td>
+    <td>${p.active?"Active":"Inactive"}</td>
     <td>
      <button onclick="editProduct('${escapeHTML(p.id)}')">Edit</button>
      <button class="danger" onclick="deleteProduct('${escapeHTML(p.id)}')">Delete</button>
@@ -216,33 +279,67 @@ async function loadProducts(){
   if(!data?.length){
    $("productsList").innerHTML='<tr><td colspan="7">No products found.</td></tr>';
   }
+
   $("productMessage").textContent="Products loaded successfully.";
+
  }catch(e){
   $("productMessage").textContent="Error: "+e.message;
  }
 }
 
+/* SAVE PRODUCT */
+
 async function saveProduct(){
+
  $("productMessage").textContent="";
+ $("saveProductBtn").disabled=true;
+
  try{
+
   const name=$("productName").value.trim();
   const category=$("productCategory").value.trim();
   const price=Number($("productPrice").value);
   const stock=Number($("productStock").value);
-  const image_url=$("productImage").value.trim();
   const description=$("productDescription").value.trim();
   const active=$("productActive").value==="true";
   const id=$("productId").value;
 
   if(!name) throw new Error("Enter product name.");
+
   if($("productPrice").value==="" || !Number.isFinite(price) || price<0)
    throw new Error("Enter a valid product price.");
+
   if($("productStock").value==="" || !Number.isInteger(stock) || stock<0)
    throw new Error("Enter a valid stock quantity.");
 
-  const product={name,category,price,stock,image_url,description,active};
+  let image_url=null;
+
+  if($("productImageFile").files[0]){
+   $("productMessage").textContent="Uploading image...";
+   image_url=await uploadProductImage();
+  }else if(id){
+   const {data,error}=await db()
+    .from("products")
+    .select("image_url")
+    .eq("id",id)
+    .single();
+
+   if(error) throw error;
+   image_url=data.image_url;
+  }
+
+  const product={
+   name,
+   category,
+   price,
+   stock,
+   image_url,
+   description,
+   active
+  };
 
   let result;
+
   if(id){
    result=await db().from("products").update(product).eq("id",id);
   }else{
@@ -251,21 +348,33 @@ async function saveProduct(){
 
   if(result.error) throw result.error;
 
-  $("productMessage").textContent=id ? "Product updated successfully!" : "Product added successfully!";
+  $("productMessage").textContent=id
+   ?"Product updated successfully!"
+   :"Product added successfully!";
+
   resetProductForm();
   await loadProducts();
+
  }catch(e){
+
   $("productMessage").textContent="Error: "+e.message;
+
+ }finally{
+  $("saveProductBtn").disabled=false;
  }
 }
 
+/* EDIT PRODUCT */
+
 async function editProduct(id){
+
  try{
+
   const {data,error}=await db()
-   .from("products")
-   .select("*")
-   .eq("id",id)
-   .single();
+  .from("products")
+  .select("*")
+  .eq("id",id)
+  .single();
 
   if(error) throw error;
 
@@ -274,24 +383,47 @@ async function editProduct(id){
   $("productCategory").value=data.category||"";
   $("productPrice").value=data.price??0;
   $("productStock").value=data.stock??0;
-  $("productImage").value=data.image_url||"";
   $("productDescription").value=data.description||"";
   $("productActive").value=String(data.active);
+
+  $("productImageFile").value="";
+
+  if(data.image_url){
+   $("imagePreview").src=data.image_url;
+   $("imagePreview").style.display="block";
+  }else{
+   $("imagePreview").style.display="none";
+  }
+
   $("saveProductBtn").textContent="Update Product";
   $("cancelEditBtn").style.display="inline-block";
+
   window.scrollTo({top:0,behavior:"smooth"});
+
  }catch(e){
   $("productMessage").textContent="Edit error: "+e.message;
  }
 }
 
+/* DELETE PRODUCT */
+
 async function deleteProduct(id){
+
  if(!confirm("Are you sure you want to delete this product?")) return;
+
  try{
-  const {error}=await db().from("products").delete().eq("id",id);
+
+  const {error}=await db()
+  .from("products")
+  .delete()
+  .eq("id",id);
+
   if(error) throw error;
+
   $("productMessage").textContent="Product deleted successfully.";
+
   await loadProducts();
+
  }catch(e){
   $("productMessage").textContent="Delete error: "+e.message;
  }
@@ -300,22 +432,33 @@ async function deleteProduct(id){
 /* ORDERS */
 
 async function loadOrders(){
+
  $("message").textContent="Loading orders...";
+
  try{
+
   const {data,error}=await db()
-   .from("orders")
-   .select("*")
-   .order("created_at",{ascending:false});
+  .from("orders")
+  .select("*")
+  .order("created_at",{ascending:false});
 
   if(error) throw error;
 
   const orders=data||[];
-  $("totalOrders").textContent=orders.length;
-  $("pendingOrders").textContent=orders.filter(o=>o.order_status==="pending").length;
-  $("deliveredOrders").textContent=orders.filter(o=>o.order_status==="delivered").length;
 
-  const sales=orders.reduce((sum,o)=>sum+(Number(o.total_amount)||0),0);
-  $("totalSales").textContent="Rs. "+sales.toLocaleString("en-LK",{minimumFractionDigits:2});
+  $("totalOrders").textContent=orders.length;
+
+  $("pendingOrders").textContent=
+   orders.filter(o=>o.order_status==="pending").length;
+
+  $("deliveredOrders").textContent=
+   orders.filter(o=>o.order_status==="delivered").length;
+
+  const sales=orders.reduce((sum,o)=>
+   sum+(Number(o.total_amount)||0),0);
+
+  $("totalSales").textContent="Rs. "+
+   sales.toLocaleString("en-LK",{minimumFractionDigits:2});
 
   $("ordersList").innerHTML=orders.map(o=>`
    <tr>
@@ -338,34 +481,58 @@ async function loadOrders(){
    </tr>
   `).join("");
 
-  if(!orders.length) $("ordersList").innerHTML='<tr><td colspan="7">No orders found.</td></tr>';
+  if(!orders.length){
+   $("ordersList").innerHTML='<tr><td colspan="7">No orders found.</td></tr>';
+  }
+
   $("message").textContent="Orders loaded successfully.";
+
  }catch(e){
   $("message").textContent="Error: "+e.message;
  }
 }
 
+/* UPDATE ORDER */
+
 async function updateStatus(id){
+
  try{
+
   const status=$("status-"+id).value;
-  const {error}=await db().from("orders").update({order_status:status}).eq("id",id);
+
+  const {error}=await db()
+  .from("orders")
+  .update({order_status:status})
+  .eq("id",id);
+
   if(error) throw error;
+
   $("message").textContent="Order status updated!";
+
   await loadOrders();
+
  }catch(e){
   $("message").textContent="Update failed: "+e.message;
  }
 }
 
+/* LOGOUT */
+
 async function logout(){
+
  await db().auth.signOut();
+
  $("dashboard").style.display="none";
  $("loginBox").style.display="block";
  $("logoutBtn").style.display="none";
+
  $("email").value="";
  $("password").value="";
+
  resetProductForm();
 }
+
+/* BUTTON EVENTS */
 
 $("loginBtn").addEventListener("click",login);
 $("refreshBtn").addEventListener("click",loadOrders);
@@ -374,16 +541,24 @@ $("saveProductBtn").addEventListener("click",saveProduct);
 $("cancelEditBtn").addEventListener("click",resetProductForm);
 $("refreshProductsBtn").addEventListener("click",loadProducts);
 
+/* RESTORE SESSION */
+
 (async()=>{
+
  try{
+
   const {data}=await db().auth.getSession();
+
   if(data.session){
    await verifyAdmin(data.session.user);
    showDashboard();
   }
+
  }catch(e){
   await db().auth.signOut();
  }
+
 })();
+
 </script></body>
 </html>
