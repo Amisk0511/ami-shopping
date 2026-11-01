@@ -137,6 +137,33 @@ oninput="searchProducts()">
 <button onclick="checkout()">Proceed to Checkout</button>
 </section>
 
+<section id="checkoutForm" style="display:none;background:white;margin:15px;padding:20px;border-radius:12px;">
+
+<h2>📦 Checkout</h2>
+
+<input id="customerName" type="text"
+placeholder="Your Full Name"
+required style="width:100%;padding:12px;margin:8px 0;">
+
+<input id="customerPhone" type="tel"
+placeholder="Mobile Number"
+required style="width:100%;padding:12px;margin:8px 0;">
+
+<textarea id="deliveryAddress"
+placeholder="Delivery Address"
+required style="width:100%;padding:12px;margin:8px 0;"></textarea>
+
+<h3>Payment Method</h3>
+
+<p>💵 Cash on Delivery (COD)</p>
+
+<h3>Total: Rs. <span id="checkoutTotal">0.00</span></h3>
+
+<button onclick="placeOrder()">Place Order</button>
+
+<button onclick="closeCheckout()">Cancel</button>
+
+</section>
 <footer>
 <h3>Ami Shopping</h3>
 <p>Online Grocery Marketplace</p>
