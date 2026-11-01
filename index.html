@@ -291,11 +291,11 @@ function closeCheckout(){
  document.getElementById("checkoutForm").style.display="none";
 }
 
-function placeOrder(){
+async function placeOrder(){
 
- const name=document.getElementById("customerName").value.trim();
- const phone=document.getElementById("customerPhone").value.trim();
- const address=document.getElementById("deliveryAddress").value.trim();
+ const name = document.getElementById("customerName").value.trim();
+ const phone = document.getElementById("customerPhone").value.trim();
+ const address = document.getElementById("deliveryAddress").value.trim();
 
  if(!name || !phone || !address){
   alert("Please fill all details!");
@@ -307,20 +307,51 @@ function placeOrder(){
   return;
  }
 
- if(cart.length===0){
+ if(cart.length === 0){
   alert("Your cart is empty!");
   return;
  }
 
- const total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
+ if(typeof supabaseClient === "undefined"){
+  alert("Database connection not found!");
+  return;
+ }
+
+ const total = cart.reduce((sum,p) => sum + p.price * p.qty, 0);
+
+ const items = cart.map(p => ({
+  product_id: String(p.id),
+  name: p.name,
+  quantity: p.qty,
+  unit_price: p.price
+ }));
+
+ const { error } = await supabaseClient
+  .from("orders")
+  .insert([{
+   customer_name: name,
+   customer_phone: phone,
+   delivery_address: address,
+   total_amount: total,
+   payment_method: "COD",
+   order_status: "pending",
+   items: items
+  }]);
+
+ if(error){
+  console.error("Order Error:", error);
+  alert("Order could not be saved. Please try again.");
+  return;
+ }
 
  alert(
-  "Thank you "+name+"!\n"+
-  "Your order total: Rs. "+total.toFixed(2)+
+  "Thank you " + name + "!\n" +
+  "Your order has been saved successfully!\n" +
+  "Total: Rs. " + total.toFixed(2) +
   "\nPayment: Cash on Delivery (COD)"
  );
 
- cart=[];
+ cart = [];
  updateCart();
  closeCheckout();
 }
