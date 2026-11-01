@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ami Shopping - Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f1f5ff;
+ color:#172554;
+}
+header{
+ background:#123b8b;
+ color:white;
+ padding:20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+header h2{margin:0}
+button{
+ border:0;
+ padding:11px 16px;
+ border-radius:7px;
+ cursor:pointer;
+ font-weight:bold;
+}
+.logout{background:#ffd43b;color:#123b8b}
+.container{padding:20px;max-width:1100px;margin:auto}
+.card{
+ background:white;
+ padding:20px;
+ border-radius:12px;
+ box-shadow:0 3px 12px #0001;
+ margin-bottom:20px;
+}
+input,select{
+ width:100%;
+ padding:12px;
+ margin:8px 0;
+ border:1px solid #ccd5e5;
+ border-radius:7px;
+}
+.primary{background:#1769e0;color:white;width:100%}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+ gap:15px;
+}
+.stat{
+ background:white;
+ padding:20px;
+ border-radius:12px;
+ border-left:5px solid #ffd43b;
+}
+.stat h2{color:#1769e0;margin-bottom:0}
+table{width:100%;border-collapse:collapse;min-width:750px}
+th,td{padding:12px;border-bottom:1px solid #ddd;text-align:left}
+th{background:#e7efff}
+.table-wrap{overflow-x:auto}
+#dashboard{display:none}
+#error{color:#c62828}
+</style>
+</head>
+
+<body>
+
+<header>
+ <h2>AMI SHOPPING</h2>
+ <button class="logout" id="logoutBtn" onclick="logout()" style="display:none">
+ Logout
+ </button>
+</header>
+
+<div class="container">
+
+<div class="card" id="loginBox">
+ <h2>Admin Login</h2>
+ <p>Login to manage Ami Shopping orders.</p>
+
+ <input type="email" id="email" placeholder="Admin Email">
+ <input type="password" id="password" placeholder="Password">
+
+ <button class="primary" onclick="login()">Login</button>
+ <p id="error"></p>
+</div>
+
+<div id="dashboard">
+
+ <h2>Admin Dashboard</h2>
+
+ <div class="stats">
+  <div class="stat">
+   <p>Total Orders</p>
+   <h2 id="totalOrders">0</h2>
+  </div>
+
+  <div class="stat">
+   <p>Pending Orders</p>
+   <h2 id="pendingOrders">0</h2>
+  </div>
+
+  <div class="stat">
+   <p>Delivered Orders</p>
+   <h2 id="deliveredOrders">0</h2>
+  </div>
+
+  <div class="stat">
+   <p>Total Sales</p>
+   <h2 id="totalSales">Rs. 0.00</h2>
+  </div>
+ </div>
+
+ <div class="card" style="margin-top:20px">
+  <h3>Customer Orders</h3>
+  <button onclick="loadOrders()" class="primary">
+   Refresh Orders
+  </button>
+
+  <p id="orderMessage"></p>
+
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>Customer</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th>Items</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Update</th>
+     </tr>
+    </thead>
+    <tbody id="ordersList"></tbody>
+   </table>
+  </div>
+ </div>
+
+</div>
+</div>
+
+<script>
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+const errorBox = document.getElementById("error");
+
+function escapeHTML(value){
+ return String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ })[c]);
+}
+
+async function login(){
+
+ errorBox.textContent = "";
+
+ const email = document.getElementById("email").value.trim();
+ const password = document.getElementById("password").value;
+
+ if(!email || !password){
+  errorBox.textContent = "Enter email and password.";
+  return;
+ }
+
+ const {data,error} = await supabaseClient.auth.signInWithPassword({
+  email,
+  password
+ });
+
+ if(error){
+  errorBox.textContent = error.message;
+  return;
+ }
+
+ await
