@@ -269,14 +269,62 @@ function updateCart(){
  document.getElementById("cartCount").textContent=count;
 }
 
-function checkout(){
+ function checkout(){
+
  if(cart.length===0){
- alert("Your cart is empty!");
- return;
+  alert("Your cart is empty!");
+  return;
  }
 
- alert("Shopping cart is ready! Customer checkout will be added next.");
+ document.getElementById("checkoutForm").style.display="block";
+
+ let total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
+
+ document.getElementById("checkoutTotal").textContent=total.toFixed(2);
+
+ document.getElementById("checkoutForm").scrollIntoView({
+  behavior:"smooth"
+ });
 }
+
+function closeCheckout(){
+ document.getElementById("checkoutForm").style.display="none";
+}
+
+function placeOrder(){
+
+ const name=document.getElementById("customerName").value.trim();
+ const phone=document.getElementById("customerPhone").value.trim();
+ const address=document.getElementById("deliveryAddress").value.trim();
+
+ if(!name || !phone || !address){
+  alert("Please fill all details!");
+  return;
+ }
+
+ if(!/^[0-9+\-\s]{9,15}$/.test(phone)){
+  alert("Please enter a valid phone number!");
+  return;
+ }
+
+ if(cart.length===0){
+  alert("Your cart is empty!");
+  return;
+ }
+
+ const total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
+
+ alert(
+  "Thank you "+name+"!\n"+
+  "Your order total: Rs. "+total.toFixed(2)+
+  "\nPayment: Cash on Delivery (COD)"
+ );
+
+ cart=[];
+ updateCart();
+ closeCheckout();
+}
+
 
 displayProducts(products);
 updateCart();
