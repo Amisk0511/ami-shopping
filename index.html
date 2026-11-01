@@ -1,367 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ami Shopping</title>
+<title>Ami Shopping - Customer Account</title>
+
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="./supabase.js"></script>
 
 <style>
 *{box-sizing:border-box}
 body{
  margin:0;
  font-family:Arial,sans-serif;
- background:#f5f8ff;
- color:#222;
-}
-header{
- background:#102f75;
- color:white;
- padding:20px;
- text-align:center;
-}
-nav{
- background:#168bd0;
- padding:15px;
+ background:linear-gradient(135deg,#06358d,#0878ed);
+ min-height:100vh;
  display:flex;
+ align-items:center;
  justify-content:center;
- gap:20px;
-}
-nav a{
- color:white;
- text-decoration:none;
- font-weight:bold;
-}
-.search{
- text-align:center;
  padding:20px;
 }
-.search input{
- width:90%;
- max-width:500px;
- padding:14px;
- border:1px solid #ccc;
- border-radius:10px;
- font-size:16px;
-}
-h2{
- text-align:center;
- color:#102f75;
-}
-.products{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
- gap:15px;
- padding:15px;
-}
-.card{
+.box{
  background:white;
- padding:15px;
- text-align:center;
- border-radius:12px;
- box-shadow:0 2px 8px #ddd;
+ width:100%;
+ max-width:430px;
+ padding:30px;
+ border-radius:20px;
+ box-shadow:0 10px 35px #001b5040;
 }
-.emoji{font-size:45px}
-.price{
- color:#102f75;
- font-weight:bold;
+.logo{
+ text-align:center;
+ font-size:35px;
+ font-weight:900;
+ color:#063b9c;
+}
+.logo span{color:#ffc900}
+h2{text-align:center;color:#14285b}
+input{
+ width:100%;
+ padding:14px;
+ margin:8px 0;
+ border:1px solid #d5deed;
+ border-radius:9px;
+ font-size:15px;
 }
 button{
- background:#ffd43b;
+ width:100%;
+ padding:14px;
  border:0;
- padding:11px 15px;
- border-radius:8px;
+ border-radius:9px;
+ background:#0865e8;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+ margin-top:12px;
+}
+.switch{
+ text-align:center;
+ margin-top:20px;
+ color:#596783;
+}
+.switch a{
+ color:#0865e8;
  font-weight:bold;
  cursor:pointer;
 }
-#cart{
- background:white;
- margin:15px;
- padding:20px;
- border-radius:12px;
-}
-.cart-item{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:8px;
- border-bottom:1px solid #ddd;
- padding:12px 0;
-}
-.cart-item button{
- padding:6px 10px;
-}
-.total{
- font-size:20px;
- color:#102f75;
- font-weight:bold;
- text-align:right;
-}
-footer{
- background:#102f75;
- color:white;
+#error{
+ color:#d32f2f;
  text-align:center;
- padding:20px;
- margin-top:30px;
+ font-size:14px;
 }
+#success{
+ color:#13853c;
+ text-align:center;
+ font-size:14px;
+}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>🛒 Ami Shopping</h1>
-<p>Your Online Grocery Marketplace</p>
-</header>
+<div class="box">
 
-<nav>
-<a href="#">Home</a>
-<a href="#products">Products</a>
-<a href="#cart">Cart 🛒 (<span id="cartCount">0</span>)</a>
-</nav>
+ <div class="logo">Ami<span>🛒</span></div>
 
-<div class="search">
-<input type="text" id="searchInput"
-placeholder="Search products..."
-oninput="searchProducts()">
+ <div id="registerBox">
+  <h2>Create Account</h2>
+
+  <input id="fullName" type="text" placeholder="Full Name">
+  <input id="phone" type="tel" placeholder="Phone Number">
+  <input id="address" type="text" placeholder="Delivery Address">
+  <input id="regEmail" type="email" placeholder="Email Address">
+  <input id="regPassword" type="password" placeholder="Password (minimum 6 characters)">
+  <input id="confirmPassword" type="password" placeholder="Confirm Password">
+
+  <button id="registerBtn" type="button">Create Account</button>
+
+  <p class="switch">
+   Already have an account?
+   <a onclick="showLogin()">Login</a>
+  </p>
+ </div>
+
+ <div id="loginBox" class="hidden">
+  <h2>Customer Login</h2>
+
+  <input id="loginEmail" type="email" placeholder="Email Address">
+  <input id="loginPassword" type="password" placeholder="Password">
+
+  <button id="loginBtn" type="button">Login</button>
+
+  <p class="switch">
+   New customer?
+   <a onclick="showRegister()">Create Account</a>
+  </p>
+ </div>
+
+ <p id="error"></p>
+ <p id="success"></p>
+
 </div>
 
-<h2>Our Products</h2>
-
-<section class="products" id="products"></section>
-
-<h2>🛒 My Shopping Cart</h2>
-
-<section id="cart">
-<div id="cartItems">Your cart is empty.</div>
-<p class="total">Total: Rs. <span id="total">0.00</span></p>
-<button onclick="checkout()">Proceed to Checkout</button>
-</section>
-
-<section id="checkoutForm" style="display:none;background:white;margin:15px;padding:20px;border-radius:12px;">
-
-<h2>📦 Checkout</h2>
-
-<input id="customerName" type="text"
-placeholder="Your Full Name"
-required style="width:100%;padding:12px;margin:8px 0;">
-
-<input id="customerPhone" type="tel"
-placeholder="Mobile Number"
-required style="width:100%;padding:12px;margin:8px 0;">
-
-<textarea id="deliveryAddress"
-placeholder="Delivery Address"
-required style="width:100%;padding:12px;margin:8px 0;"></textarea>
-
-<h3>Payment Method</h3>
-
-<p>💵 Cash on Delivery (COD)</p>
-
-<h3>Total: Rs. <span id="checkoutTotal">0.00</span></h3>
-
-<button onclick="placeOrder()">Place Order</button>
-
-<button onclick="closeCheckout()">Cancel</button>
-
-</section>
-<footer>
-<h3>Ami Shopping</h3>
-<p>Online Grocery Marketplace</p>
-<p>Cash on Delivery Available</p>
-<p>© 2026 Ami Shopping</p>
-</footer>
-
 <script>
+const $ = id => document.getElementById(id);
 
-const products = [
-{id:1,name:"Carrot",category:"Vegetables",price:350,emoji:"🥕"},
-{id:2,name:"Potato",category:"Vegetables",price:280,emoji:"🥔"},
-{id:3,name:"Tomato",category:"Vegetables",price:300,emoji:"🍅"},
-{id:4,name:"Apple",category:"Fruits",price:900,emoji:"🍎"},
-{id:5,name:"Banana",category:"Fruits",price:250,emoji:"🍌"},
-{id:6,name:"Rice",category:"Groceries",price:220,emoji:"🍚"},
-{id:7,name:"Milk",category:"Milk Products",price:450,emoji:"🥛"},
-{id:8,name:"Juice",category:"Beverages",price:350,emoji:"🧃"}
-];
-
-let cart = [];
-
-function displayProducts(list){
- const area=document.getElementById("products");
- area.innerHTML="";
-
- list.forEach(p=>{
- area.innerHTML+=`
- <div class="card">
- <div class="emoji">${p.emoji}</div>
- <h3>${p.name}</h3>
- <p>${p.category}</p>
- <p class="price">Rs. ${p.price.toFixed(2)}</p>
- <button onclick="addToCart(${p.id})">
- Add to Cart
- </button>
- </div>`;
- });
+function showLogin(){
+ $("registerBox").classList.add("hidden");
+ $("loginBox").classList.remove("hidden");
+ $("error").textContent="";
+ $("success").textContent="";
 }
 
-function searchProducts(){
- const text=document.getElementById("searchInput").value.toLowerCase();
- const filtered=products.filter(p=>
- p.name.toLowerCase().includes(text) ||
- p.category.toLowerCase().includes(text)
- );
- displayProducts(filtered);
+function showRegister(){
+ $("loginBox").classList.add("hidden");
+ $("registerBox").classList.remove("hidden");
+ $("error").textContent="";
+ $("success").textContent="";
 }
 
-function addToCart(id){
- const item=cart.find(p=>p.id===id);
-
- if(item){
- item.qty++;
- }else{
- const product=products.find(p=>p.id===id);
- cart.push({...product,qty:1});
- }
-
- updateCart();
-}
-
-function changeQty(id,amount){
- const item=cart.find(p=>p.id===id);
- if(!item)return;
-
- item.qty+=amount;
-
- if(item.qty<=0){
- cart=cart.filter(p=>p.id!==id);
- }
-
- updateCart();
-}
-
-function updateCart(){
- const area=document.getElementById("cartItems");
- let total=0;
- let count=0;
-
- if(cart.length===0){
- area.innerHTML="Your cart is empty.";
- }else{
- area.innerHTML="";
-
- cart.forEach(p=>{
- total+=p.price*p.qty;
- count+=p.qty;
-
- area.innerHTML+=`
- <div class="cart-item">
- <div>${p.emoji} ${p.name}<br>
- Rs. ${p.price} × ${p.qty}</div>
- <div>
- <button onclick="changeQty(${p.id},-1)">−</button>
- <button onclick="changeQty(${p.id},1)">+</button>
- </div>
- </div>`;
- });
- }
-
- document.getElementById("total").textContent=total.toFixed(2);
- document.getElementById("cartCount").textContent=count;
-}
-
- function checkout(){
-
- if(cart.length===0){
-  alert("Your cart is empty!");
-  return;
- }
-
- document.getElementById("checkoutForm").style.display="block";
-
- let total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
-
- document.getElementById("checkoutTotal").textContent=total.toFixed(2);
-
- document.getElementById("checkoutForm").scrollIntoView({
-  behavior:"smooth"
- });
-}
-
-function closeCheckout(){
- document.getElementById("checkoutForm").style.display="none";
-}
-
-async function placeOrder(){
-
- const name = document.getElementById("customerName").value.trim();
- const phone = document.getElementById("customerPhone").value.trim();
- const address = document.getElementById("deliveryAddress").value.trim();
-
- if(!name || !phone || !address){
-  alert("Please fill all details!");
-  return;
- }
-
- if(!/^[0-9+\-\s]{9,15}$/.test(phone)){
-  alert("Please enter a valid phone number!");
-  return;
- }
-
- if(cart.length === 0){
-  alert("Your cart is empty!");
-  return;
- }
-
+function getClient(){
  if(typeof supabaseClient === "undefined"){
-  alert("Database connection not found!");
-  return;
+  throw new Error("Supabase connection not found. Check supabase.js");
  }
-
- const total = cart.reduce((sum,p) => sum + p.price * p.qty, 0);
-
- const items = cart.map(p => ({
-  product_id: String(p.id),
-  name: p.name,
-  quantity: p.qty,
-  unit_price: p.price
- }));
-
- const { error } = await supabaseClient
-  .from("orders")
-  .insert([{
-   customer_name: name,
-   customer_phone: phone,
-   delivery_address: address,
-   total_amount: total,
-   payment_method: "COD",
-   order_status: "pending",
-   items: items
-  }]);
-
- if(error){
-  console.error("Order Error:", error);
-  alert("Order could not be saved. Please try again.");
-  return;
- }
-
- alert(
-  "Thank you " + name + "!\n" +
-  "Your order has been saved successfully!\n" +
-  "Total: Rs. " + total.toFixed(2) +
-  "\nPayment: Cash on Delivery (COD)"
- );
-
- cart = [];
- updateCart();
- closeCheckout();
+ return supabaseClient;
 }
 
+async function saveProfile(user, fullName, phone, address){
+ const db = getClient();
 
-displayProducts(products);
-updateCart();
+ const profile = {
+  id:user.id,
+  full_name:fullName || user.user_metadata?.full_name || "",
+  phone:phone || user.user_metadata?.phone || "",
+  address:address || user.user_metadata?.address || ""
+ };
 
+ const {data,error} = await db
+  .from("customer_profiles")
+  .select("id")
+  .eq("id",user.id)
+  .maybeSingle();
+
+ if(error) throw error;
+
+ if(data){
+  const {error:updateError} = await db
+   .from("customer_profiles")
+   .update(profile)
+   .eq("id",user.id);
+
+  if(updateError) throw updateError;
+ }else{
+  const {error:insertError} = await db
+   .from("customer_profiles")
+   .insert(profile);
+
+  if(insertError) throw insertError;
+ }
+}
+
+async function register(){
+ $("error").textContent="";
+ $("success").textContent="";
+
+ try{
+  const name=$("fullName").value.trim();
+  const phone=$("phone").value.trim();
+  const address=$("address").value.trim();
+  const email=$("regEmail").value.trim();
+  const password=$("regPassword").value;
+  const confirm=$("confirmPassword").value;
+
+  if(!name || !phone || !address || !email || !password){
+   throw new Error("Please fill all fields.");
+  }
+
+  if(password.length<6){
+   throw new Error("Password must have at least 6 characters.");
+  }
+
+  if(password!==confirm){
+   throw new Error("Passwords do not match.");
+  }
+
+  $("registerBtn").disabled=true;
+  $("registerBtn").textContent="Creating Account...";
+
+  const db=getClient();
+
+  const {data,error}=await db.auth.signUp({
+   email,
+   password,
+   options:{
+    data:{
+     full_name:name,
+     phone:phone,
+     address:address
+    }
+   }
+  });
+
+  if(error) throw error;
+
+  if(data.session && data.user){
+   await saveProfile(data.user,name,phone,address);
+   $("success").textContent="Account created successfully!";
+   setTimeout(()=>{
+    window.location.href="./customer-dashboard.html";
+   },1000);
+  }else{
+   $("success").textContent=
+    "Registration successful! Please confirm your email, then login.";
+   showLogin();
+   $("success").textContent=
+    "Please check your email for confirmation, then login.";
+  }
+
+ }catch(e){
+  $("error").textContent=e.message;
+ }finally{
+  $("registerBtn").disabled=false;
+  $("registerBtn").textContent="Create Account";
+ }
+}
+
+async function login(){
+ $("error").textContent="";
+ $("success").textContent="";
+
+ try{
+  const email=$("loginEmail").value.trim();
+  const password=$("loginPassword").value;
+
+  if(!email || !password){
+   throw new Error("Enter email and password.");
+  }
+
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="Logging in...";
+
+  const db=getClient();
+
+  const {data,error}=await db.auth.signInWithPassword({
+   email,
+   password
+  });
+
+  if(error) throw error;
+
+  await saveProfile(data.user);
+
+  $("success").textContent="Login successful!";
+
+  setTimeout(()=>{
+   window.location.href="./customer-dashboard.html";
+  },800);
+
+ }catch(e){
+  $("error").textContent=e.message;
+ }finally{
+  $("loginBtn").disabled=false;
+  $("loginBtn").textContent="Login";
+ }
+}
+
+$("registerBtn").addEventListener("click",register);
+$("loginBtn").addEventListener("click",login);
 </script>
 
 </body>
