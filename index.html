@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ami Shopping</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f8ff;
+  color: #222;
+}
+
+header {
+  background: #102f75;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 28px;
+}
+
+header p {
+  margin-top: 8px;
+}
+
+nav {
+  background: #1e90d6;
+  padding: 13px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.search {
+  padding: 20px;
+  text-align: center;
+}
+
+.search input {
+  width: 90%;
+  max-width: 500px;
+  padding: 13px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+  margin: 20px;
+  color: #102f75;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px #ddd;
+}
+
+.card .emoji {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  margin: 8px;
+}
+
+.price {
+  color: #102f75;
+  font-weight: bold;
+  margin: 10px;
+}
+
+button {
+  background: #ffd43b;
+  color: #102f75;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+footer {
+  background: #102f75;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛒 Ami Shopping</h1>
+  <p>Your Online Grocery Marketplace</p>
+</header>
+
+<nav>
+  <a href="#">Home</a>
+  <a href="#products">Products</a>
+  <a href="#contact">Contact</a>
+  <a href="#cart">Cart 🛒</a>
+</nav>
+
+<div class="search">
+  <input type="text" placeholder="Search groceries...">
+</div>
+
+<h2>Our Categories</h2>
+
+<section class="products" id="products">
+
+  <div class="card">
+    <div class="emoji">🥬</div>
+    <h3>Vegetables</h3>
+    <p>Fresh Vegetables</p>
+    <button>Shop Now</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🍎</div>
+    <h3>Fruits</h3>
+    <p>Fresh Fruits</p>
+    <button>Shop Now</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🍚</div>
+    <h3>Rice & Grains</h3>
+    <p>Quality Products</p>
+    <button>Shop Now</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🥛</div>
+    <h3>Milk Products</h3>
+    <p>Daily Essentials</p>
+    <button>Shop Now</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🥤</div>
+    <h3>Beverages</h3>
+    <p>Drinks & Juices</p>
+    <button>Shop Now</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🛍️</div>
+    <h3>Groceries</h3>
+    <p>Daily Needs</p>
+    <button>Shop Now</button>
+  </div>
+
+</section>
+
+<footer id="contact">
+  <h3>Ami Shopping</h3>
+  <p>Online Grocery Marketplace</p>
+  <p>© 2026 Ami Shopping</p>
+</footer>
+
+</body>
+</html>
